@@ -2,13 +2,12 @@
 Shellscript for using DPM8600 Series power supply.
 Needs socat installed.
 
-
- ./dpm86ng -- tool for controlling DPM8600 series power supply
-
  Usage:
-           ./dpm86ng facility action parameter
+ 
+ ./dpm86ng facility action parameter
 
- Details:
+ Details
+ 
            output/o                   -- read the actual output state (on/off)
            output/o 1/on              -- turn the output on
            output/o 0/off             -- turn the output off
