@@ -18,6 +18,7 @@
 # History:
 # 220531-AHo: complete rewrite
 # 220606-AHo: speedup/robustness 'echo' replaced by 'socat'
+# 220607-AHo: Important bugfix - socat-parameter "flock" removed. It locks kernel memory which isn't freed.
 
 #===== Variables
 
@@ -148,7 +149,7 @@ function dpm86write () {
 	slog "dpm86write -- sending '$cmd'"
 
 	# buggy - should be better and faster
-	response=`echo "$cmd\r\n" | socat - $tty,b9600,raw,flock,echo=0`
+	response=`echo "$cmd\r\n" | socat - $tty,b9600,raw,echo=0`
 
 	if [ $? -ne 0 ]; then
 		slog "dpm86write -- Communication with dpm86 failed."
@@ -182,7 +183,7 @@ function dpm86read () {
 	slog "dpm86read -- sending: '$cmd'"
 
 	# buggy - should be better and faster
-	response=`echo "$cmd\r\n" | socat - $tty,b9600,raw,flock,echo=0`
+	response=`echo "$cmd\r\n" | socat - $tty,b9600,raw,echo=0`
 
 	if [ $? -ne 0  ]; then
 		slog "dpm86read -- Communication with dpm86 failed."
