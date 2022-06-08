@@ -19,12 +19,13 @@
 # 220531-AHo: complete rewrite
 # 220606-AHo: speedup/robustness 'echo' replaced by 'socat'
 # 220607-AHo: Important bugfix - socat-parameter "flock" removed. It locks kernel memory which isn't freed.
+# 220608-AHo: Raspberry is a can of drunken worms. :-/ Removed socat completely and replaced it by "echo" and "read".
 
 #===== Variables
 
 #----- Variables needed for syslog...
 
-        ver="220531"                              # version of this script
+        ver="220608"                              # version of this script
 
 #---- Init
 
@@ -43,41 +44,41 @@
 	lfile="./dpm86.log"
 
 	# DPM settings
-	addr="01"
-	tty="/dev/ttyUSB0"
-	voltage_min="0100"		# 01,00 Volt
-	voltage_max="2900"		# 29,00 Volt
+	addr="01"			# Adress of the power supply. Default: 01. Check manual of the power suppy for more information.
+	tty="/dev/ttyUSB0"		# The device via this script is talkinf to the power supply.
+	voltage_min="0000"		# 00,00 Volt
+	voltage_max="2900"		# 29,00 Volt --> should be set automatically, depending on the type (maybe next release)
 	current_min="0000"		# 0,000 Ampere
-	current_max="9000"		# 9,000 Ampere
+	current_max="9000"		# 9,000 Ampere --> should be set automatically, depending on the type (maybe next release)
 	timeout="5"			# timeout in communication
-	
+
 	# variables for a better reading
 	read="r"
 	write="w"
 	ok="0"
 	error="1"
 
-	# supported dpm functions
-	f_voltage_target="10"		# R/W output voltage target
-	f_current_target="11"		# R/W output current target
-	f_output="12"			# R/W output on/off
-	f_voltage_current_target="20"	# -/W output voltage and current target at once ***not supportet yet***
-	f_voltage="30"			# R/- output voltage
-	f_current="31"			# R/- output current
-	f_const="32"			# R/W constant current or constant voltage status
-	f_temperature="33"		# R/- temperature
+	# supported dpm functions -- see the document "dpm86xx-series-power-supply_simple-communication-protocol.odt/pdf" in this repository
+	f_voltage_target="10"		# R/W: output voltage target
+	f_current_target="11"		# R/W :output current target
+	f_output="12"			# R/W: output on/off
+	f_voltage="30"			# R/-: output voltage
+	f_current="31"			# R/-: output current
+	f_const="32"			# R/W: constant current or constant voltage status
+	f_temperature="33"		# R/-: temperature
 	
-	# parameter
-				# f_output
-	p_off="0"		# parameter "off" for f_output
-	p_on="1"		# parameter "on" for f_output
+	# parameter for dpm functions (just for a better reading)
+	
+				# function "f_output"
+	p_off="0"		# parameter "off"
+	p_on="1"		# parameter "on"
 
-				# f_const
-	p_voltage="0"		# parameter "voltage" for f_const
-	p_current="1"		# parameter "current" for f_const
+				# function "f_const"
+	p_voltage="0"		# parameter "voltage"
+	p_current="1"		# parameter "current"
 
 
-# give a short help
+# print a short help
 function help () {
 
 	echo
@@ -133,6 +134,14 @@ function init () {
 		echo "ERROR -- No permission to write to device '$tty'."
 		exit $error
 	fi
+
+	# Configuring $tty for access via 'echo' and 'read'
+        # 9600:         baud rate
+        # cooked:       brkint ignpar istrip icrnl ixon opost isig icanon: eof and eol characters to their default values
+        # clocal:       enable modem control signals (needed?)
+        # -echo:        don't echo input characters (IMPORTANT)
+        # -icrnl:       don't translate carriage return to newline
+        stty -F $tty 9600 cooked clocal -echo -icrnl
 }
 
 ### Communication with dpm86
@@ -147,13 +156,22 @@ function dpm86write () {
 	# sending command
 	cmd=":$addr$write$opcode=$value."
 	slog "dpm86write -- sending '$cmd'"
-
-	# buggy - should be better and faster
-	response=`echo "$cmd\r\n" | socat - $tty,b9600,raw,echo=0`
+	echo "$cmd\r\n" >$tty
 
 	if [ $? -ne 0 ]; then
-		slog "dpm86write -- Communication with dpm86 failed."
-		echo "ERROR -- Communication with dpm86 failed."
+		slog "dpm86write -- Communication with dpm86 failed: sending failed."
+		echo "ERROR -- Communication with dpm86 failed: sending failed."
+		exit $error
+        fi
+
+	# reading response
+	sleep 1
+	slog "dpm86write -- reading response"
+	read -s -t $timeout response <$tty
+
+	if [ $? -ne 0 ]; then
+		slog "dpm86write -- Communication with dpm86 failed: Timeout reading response."
+		echo "ERROR -- Communication with dpm86 failed: Timeout reading response."
 		exit $error
 	fi
 
@@ -179,23 +197,32 @@ function dpm86read () {
 	local response=""
 
 	# sending command
-	local cmd=":$addr$read$opcode=0."
+	local cmd=":$addr$read$opcode=0"
 	slog "dpm86read -- sending: '$cmd'"
+	echo "$cmd\r\n" >$tty 2>&1
 
-	# buggy - should be better and faster
-	response=`echo "$cmd\r\n" | socat - $tty,b9600,raw,echo=0`
-
-	if [ $? -ne 0  ]; then
-		slog "dpm86read -- Communication with dpm86 failed."
-		echo "ERROR -- Communication with dpm86 failed."
+	if [ $? -ne 0 ]; then
+		slog "dpm86read -- Communication with dpm86 failed: sending failed."
+		echo "ERROR -- Communication with dpm86 failed: sending failed ($result)"
 		exit $error
 	fi
 
-	# cut off last two characters
-	response=${response::-2}
+        # reading response
+	sleep 1
+	slog "dpm86read -- reading response"
+	read -s -t $timeout response <$tty
+
+	if [ $? -ne 0  ]; then
+                slog "dpm86read -- Communication with dpm86 failed: Timeout reading response."
+                echo "ERROR -- Communication with dpm86 failed: Timeout reading response."
+                exit $error
+        fi
+
+	# cut off last character
+	response=${response::-1}
 	slog "response=$response -- "
 
-	# erste 7 Zeichen entfernen
+	# remove the first 7 characters
 	response=${response:7}
 	
 	slog "dpm86read -- received response '$response'"
