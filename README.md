@@ -1,12 +1,12 @@
-dpm86
+# dpm86
 
 Shellscript for using DPM8600 Series power supply.
 
-Usage:
+## Usage
  
  ./dpm86ng parameter
 
-Parameters:
+## Parameters:
  
            output/o                   -- read the actual output state (on/off)
            output/o 1/on              -- turn the output on
@@ -29,7 +29,7 @@ Parameters:
            read/r <function>          -- read value from function
            write/w <function> <value> -- write <value> to <function>
 
-Examples:
+## Examples
 
         - Turn output off
            user@mybox:~$ ./dpm86 output off
@@ -65,19 +65,18 @@ Examples:
            user@mybox:~$ ./dpm86 t
            39
  
-Should work with:
+## Should work with
 
 - DPM8605 (see f. e. https://joy-it.net/en/products/JT-DPM8605)
 - DPM8608 (search on ebay)
 - DPM8616 (search on ebay)
 - DPM8624 (see f. e. https://joy-it.net/en/products/JT-DPM8624)
 
-! Be aware !
+## Be aware!
  
-1) The power supply has to be set to "simple protocol".
-2) You have to install the tool socat.
-3) You have to place the file 'basic_functions' in the same directory.
-4) Check the variable 'tty' in order to choose the right ttyUSB-device.
-5) This script comes along with no warranty for whatever. You have been warned.
-6) Have fun.
- 
+1. The power supply has to be set to "simple protocol".
+2. You have to install the tool socat.
+3. You have to place the file 'basic_functions' in the same directory.
+4. Check the variable 'tty' in order to choose the right ttyUSB-device.
+5. This script comes along with no warranty for whatever. You have been warned.
+6. Have fun.
