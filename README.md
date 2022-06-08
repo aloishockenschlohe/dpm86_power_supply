@@ -32,17 +32,22 @@ Shellscript for using DPM8600 Series power supply.
 ## Examples
 
 - Turn output off
+
            user@mybox:~$ ./dpm86 output off
            ok
+
 - Read output state
+
            user@mybox:~$ ./dpm86 output
            0
+
 - Turn output on
 
            user@mybox:~$ ./dpm86 output on
            ok
 
 - Read output state
+
            user@mybox:~$ ./dpm86 output
            1
 - Read actual delivered current (returned current has to be divided by 1000)
