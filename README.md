@@ -75,8 +75,7 @@ Shellscript for using DPM8600 Series power supply.
 ## Be aware!
  
 1. The power supply has to be set to "simple protocol".
-2. You have to install the tool socat.
-3. You have to place the file 'basic_functions' in the same directory.
-4. Check the variable 'tty' in order to choose the right ttyUSB-device.
-5. This script comes along with no warranty for whatever. You have been warned.
-6. Have fun.
+2. You have to place the file 'basic_functions' in the same directory.
+3. Check the variable 'tty' in order to choose the right ttyUSB-device.
+4. This script comes along with no warranty for whatever. You have been warned.
+5. Have fun.
