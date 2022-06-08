@@ -38,32 +38,45 @@ Shellscript for using DPM8600 Series power supply.
            user@mybox:~$ ./dpm86 output
            0
 - Turn output on
+
            user@mybox:~$ ./dpm86 output on
            ok
+
 - Read output state
            user@mybox:~$ ./dpm86 output
            1
 - Read actual delivered current (returned current has to be divided by 1000)
+
            user@mybox:~$ ./dpm86 current
            1255
+
 - Set the target to 1.301 A (desired current has to be multiplied by 1000)
+
            user@mybox:~$ ./dpm86 current 1301
            ok
+
 - Read the target for the current (returned current has to be divided by 1000)
 
            user@mybox:~$ ./dpm86 current target
            1301
 
 - Read actual delivered voltage (returned voltage has to be divided by 100)
+
            user@mybox:~$ ./dpm86 v
            2120
+
 - Set the target to 25.3 V (desired voltage has to be multiplied by 100)
+
            user@mybox:~$ ./dpm86 voltage 2530
            ok
+
 - Read the target for the voltage (returned voltage has to be divided by 1000)
+
            user@mybox:~$ ./dpm86 v target
            2530
+
 - Read the temperature
+
            user@mybox:~$ ./dpm86 t
            39
  
