@@ -6,7 +6,7 @@ Shellscript for using DPM8600 Series power supply.
  
  ./dpm86ng parameter
 
-## Parameters:
+## Cxommand line arguments
  
            output/o                   -- read the actual output state (on/off)
            output/o 1/on              -- turn the output on
