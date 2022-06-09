@@ -50,6 +50,7 @@ Shellscript for using DPM8600 Series power supply.
 
            user@mybox:~$ ./dpm86 output
            1
+
 - Read actual delivered current (returned current has to be divided by 1000)
 
            user@mybox:~$ ./dpm86 current
