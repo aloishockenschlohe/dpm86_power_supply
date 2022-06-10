@@ -76,7 +76,7 @@ Shellscript for using DPM8600 Series power supply.
            user@mybox:~$ ./dpm86 voltage 2530
            ok
 
-- Read the target for the voltage (returned voltage has to be divided by 1000)
+- Read the target for the voltage (returned voltage has to be divided by 100)
 
            user@mybox:~$ ./dpm86 v target
            2530
@@ -95,8 +95,8 @@ Shellscript for using DPM8600 Series power supply.
 
 ## Be aware!
  
-1. The power supply has to be set to "simple protocol".
+1. The power supply has to be set to "simple protocol". Pleasecheck the manual.
 2. You have to place the file 'basic_functions' in the same directory.
-3. Check the variable 'tty' in order to choose the right ttyUSB-device.
-4. This script comes along with no warranty for whatever. You have been warned.
+3. Check the variable 'tty' to choose the right ttyUSB-device.
+4. This script comes along with no warranty for anything. You have been warned.
 5. Have fun.
