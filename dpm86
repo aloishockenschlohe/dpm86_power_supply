@@ -29,7 +29,7 @@
 
 #---- Init
 
-        . ./basic-functions
+        . ./basic-functions                       # please be sure, that this file is placed in the same directory and is executable
 
 #----- external programs
 
