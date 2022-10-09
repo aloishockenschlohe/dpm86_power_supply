@@ -31,60 +31,52 @@ Shellscript for using DPM8600 Series power supply.
 
 ## Examples
 
-- Turn output off
+
+- Turn output off, read output state, turn output on, read output state again:
 
            user@mybox:~$ ./dpm86 output off
            ok
-
-- Read output state
-
            user@mybox:~$ ./dpm86 output
            0
-
-- Turn output on
-
            user@mybox:~$ ./dpm86 output on
            ok
-
-- Read output state
-
            user@mybox:~$ ./dpm86 output
            1
-
-- Read actual delivered current (returned current has to be divided by 1000)
+           user@mybox:~$ 
+           
+- Read actual delivered current (returned current has to be divided by 1000).
 
            user@mybox:~$ ./dpm86 current
            1255
+           user@mybox:~$ 
 
-- Set the target to 1.301 A (desired current has to be multiplied by 1000)
+- Set the current target to 1.301 A (desired current has to be multiplied by 1000) and read it.
 
            user@mybox:~$ ./dpm86 current 1301
            ok
-
-- Read the target for the current (returned current has to be divided by 1000)
-
            user@mybox:~$ ./dpm86 current target
            1301
+           user@mybox:~$ 
 
-- Read actual delivered voltage (returned voltage has to be divided by 100)
+- Read actual delivered voltage (returned voltage has to be divided by 100).
 
            user@mybox:~$ ./dpm86 v
            2120
+           user@mybox:~$ 
 
-- Set the target to 25.3 V (desired voltage has to be multiplied by 100)
+- Set the voltage target to 25.3 V (desired voltage has to be multiplied by 100) and read it.
 
            user@mybox:~$ ./dpm86 voltage 2530
            ok
-
-- Read the target for the voltage (returned voltage has to be divided by 100)
-
            user@mybox:~$ ./dpm86 v target
            2530
+           user@mybox:~$ 
 
 - Read the temperature
 
            user@mybox:~$ ./dpm86 t
            39
+           user@mybox:~$ 
  
 ## Should work with
 
@@ -98,5 +90,5 @@ Shellscript for using DPM8600 Series power supply.
 1. The power supply has to be set to "simple protocol". Pleasecheck the manual.
 2. You have to place the file 'basic_functions' in the same directory.
 3. Check the variable 'tty' to choose the right ttyUSB-device.
-4. This script comes along with no warranty for anything. You have been warned.
+4. This script comes along with no warranty at all. You have been warned.
 5. Have fun.
