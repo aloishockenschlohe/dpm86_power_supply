@@ -20,6 +20,7 @@
 # 220606-AHo: speedup/robustness 'echo' replaced by 'socat'
 # 220607-AHo: Important bugfix - socat-parameter "flock" removed. It locks kernel memory which isn't freed.
 # 220608-AHo: Raspberry is a can of drunken worms. :-/ Removed socat completely and replaced it by "echo" and "read".
+# 221009-AHo: Fixed a stupid typo (name of the file 'basic_functions'). Thanks to stcan! :-)
 
 #===== Variables
 
@@ -29,7 +30,7 @@
 
 #---- Init
 
-        . ./basic-functions                       # please be sure, that this file is placed in the same directory and is executable
+        . ./basic_functions                       # please be sure, that this file is placed in the same directory and is executable
 
 #----- external programs
 
