@@ -26,7 +26,7 @@
 
 #----- Variables needed for syslog...
 
-        ver="220608"                              # version of this script
+        ver="221009"                              # version of this script
 
 #---- Init
 
