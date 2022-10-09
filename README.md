@@ -87,7 +87,7 @@ Shellscript for using DPM8600 Series power supply.
 
 ## Be aware!
  
-1. The power supply has to be set to "simple protocol". Pleasecheck the manual.
+1. The power supply has to be set to "simple protocol". Please check the manual.
 2. You have to place the file 'basic_functions' in the same directory.
 3. Check the variable 'tty' to choose the right ttyUSB-device.
 4. This script comes along with no warranty at all. You have been warned.
