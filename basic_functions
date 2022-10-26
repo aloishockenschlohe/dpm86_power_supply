@@ -3,6 +3,10 @@
 # Program: basic_functions
 # Purpose: provide a set of basic functions
 
+#
+# Don't use this file any longer - use dpm86_python instead.
+#
+
 # History
 # -------
 #111209-AHo: 0.1 -- first basic stuff (log, slog, goodbye, abort, fatal)
