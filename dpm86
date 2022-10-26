@@ -3,6 +3,10 @@
 # Program: dpm86
 # Purpose: easy communication with DPM8600 Series Power Supply
 
+# !!!
+# !!! Please use dpm86_python instead.
+# !!!
+
 #
 # Should work with:
 #
