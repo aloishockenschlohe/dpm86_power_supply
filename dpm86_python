@@ -1,0 +1,403 @@
+#! /usr/bin/python3
+
+# Program: dpm86
+# Purpose: easy communication with DPM8600 Series Power Supply
+
+#
+# Should work with:
+#
+# - DPM8605 (see f. e. https://joy-it.net/en/products/JT-DPM8605)
+# - DPM8608 (search on ebay)
+# - DPM8616 (search on ebay)
+# - DPM8624 (see f. e. https://joy-it.net/en/products/JT-DPM8624)
+#
+# ! Be aware !
+# - The power supply has to be set to "simple protocol" (this is the default configuration). Check the manual.
+# - You have to place the file 'basic_functions' in the same directory.
+# - Check the variable 'tty' and choose the correct ttyUSB-device.
+# - Check the variable 'addr' and choose the correct ID of your power supply. The ID is '01' by default.
+#   Unless you changed the setup of your power supply this should match. If in doubt: Check the manual and your power supply.
+# - This script comes along with no warranty at all. You have been warned.
+# - Have fun.
+#
+
+# History:
+#221026-AHo: Rewrite in Python
+
+import sys
+import serial, time
+import os, stat
+from os.path import exists
+from os import access, R_OK, W_OK
+
+
+#----- variables
+
+ver="221026"			# version of this script
+
+# logging
+ltag="dpm86"
+lfacility="user"
+lfile="./dpm86.log"
+
+# DPM settings
+addr="01"			# Adress of the power supply. Default: 01. Check manual of the power suppy for more information.
+tty="/dev/ttyUSB0"		# The device via this script is talkinf to the power supply.
+voltage_min=0			# 00,00 Volt
+voltage_max=2900		# 29,00 Volt --> should be set automatically, depending on the type (maybe next release)
+current_min=0			# 0,000 Ampere
+current_max=9000		# 9,000 Ampere --> should be set automatically, depending on the type (maybe next release)
+
+# variables for a better reading
+read="r"
+write="w"
+ok=0
+error=1
+
+# supported dpm functions -- see the document "dpm86xx-series-power-supply_simple-communication-protocol.odt/pdf" in this repository
+f_voltage_target="10"		# R/W: output voltage target
+f_current_target="11"		# R/W :output current target
+f_output="12"			# R/W: output on/off
+f_voltage="30"			# R/-: output voltage
+f_current="31"			# R/-: output current
+f_const="32"			# R/W: constant current or constant voltage status
+f_temperature="33"		# R/-: temperature
+	
+# parameter for dpm functions (just for a better reading)
+	
+			# function "f_output"
+p_off="0"		# parameter "off"
+p_on="1"		# parameter "on"
+
+			# function "f_const"
+p_voltage="0"		# parameter "voltage"
+p_current="1"		# parameter "current"
+
+
+#----- Code starts here :-)
+
+
+# print a short help
+def help():
+
+	print("")
+	print(" " + sys.argv[0] + " -- tool for controlling DPM8600 series power supply")
+	print("")
+	print(" Usage:")
+	print("           $0 facility action parameter")
+	print("")
+	print(" Details:")
+	print("           output/o                        -- read the actual output state (on/off)")
+	print("           output/o 1/on                   -- turn the output on")
+	print("           output/o 0/off                  -- turn the output off")
+	print("")
+	print("           voltage/volt/v                  -- read the actual delivered voltage")
+	print("           voltage/volt/v <value>          -- set the voltage target")
+	print("           voltage/volt/v target           -- read the voltage target")
+	print("")
+	print("           current/c/ampere/amp/a          -- read the actual deliviered current")
+	print("           current/c/ampere/amp/a <value>  -- set the target")
+	print("           current/c/ampere/amp/a target   -- current: read the target")
+	print("")
+	print("           const/C                         -- read the actual const setting (const voltage/const current)")
+	print("           const/C voltage/v               -- set constant voltage delivery")
+	print("           const/C current/c/ampere/amp/a  -- set constant current delivery")
+	print("")
+	print("           temp/t                          -- read the temperature")
+	print("")
+	print("           read/r <function>               -- read value from function")
+	print("           write/w <function> <value>      -- write <value> to <function>")
+	print("")
+
+
+# ----- command line argument "current/c/ampere/amp/a"
+
+# dpm86 current/c/ampere/amp/a		(read the actual delivered voltage)
+def cmd_current_read():
+
+	dpm86read(f_current)
+
+# dpm86 current/c/ampere/amp/a target	(read the voltage target)
+def cmd_current_target():
+
+	print("Calling dpm86read(" + f_current_target + ")")
+	dpm86read(f_current_target)
+
+# dpm86 current/c/ampere/amp/a <number>	(set the voltage target)
+def cmd_current_set():
+
+	if sys.argv[2].isdigit():
+		current = int(sys.argv[2])
+		if current >= current_min and current <= current_max:
+			dpm86write(f_current_target, sys.argv[2])
+
+	print("Argument 'current': invalid parameter '" + sys.argv[2] +"'")
+	print("Expected: integer between " + current_min + " and " + current_max + ".")
+	print("")
+	sys.exit(error)
+
+# dpm86 current/v ...
+def cmd_current():
+
+	if len(sys.argv) == 2: cmd_current_read()		# current/c/ampere/amp/a          -- read the actual deliviered current
+	elif sys.argv[2] in ['target']: cmd_current_target()	# current/c/ampere/amp/a target   -- current: read the target 
+	else: cmd_current_set()					# current/c/ampere/amp/a <value>  -- set the target
+
+
+# ----- command line argument "voltage/volt/v"
+
+# dpm86 voltage/v		(read the actual delivered voltage)
+def cmd_voltage_read():
+
+	dpm86read(f_voltage)
+
+# dpm86 voltage/v target	(read the voltage target)
+def cmd_voltage_target():
+
+	dpm86read(f_voltage_target)
+
+# dpm86 voltage/v <number>	(set the voltage target)
+def cmd_voltage_set():
+
+	if sys.argv[2].isdigit():
+		voltage = int(sys.argv[2])
+		if voltage >= voltage_min and voltage <= voltage_max:
+			dpm86write(f_voltage_target, sys.argv[2])
+
+	print("Argument 'voltage': invalid parameter '" + sys.argv[2] +"'")
+	print("Expected: integer between %d and %d." % (voltage_min, voltage_max))
+	print("")
+	sys.exit(error)
+
+# dpm86 voltage/v ...
+def cmd_voltage():
+
+	if len(sys.argv) == 2: cmd_voltage_read()		# voltage/v          -- voltage: read the actual delivered voltage
+	elif sys.argv[2] in ['target']: cmd_voltage_target()	# voltage/v target   -- voltage: read the target
+	else: cmd_voltage_set()					# voltage/v <value>  -- voltage: set the target
+
+# ----- raw communication
+
+# dpm read/r <function>
+def cmd_read():
+
+	dpm86read(sys.argv[2])
+
+# dpm write/w <function> <value>
+def cmd_write():
+
+	dpm86write(sys.argv[2], sys.argv[3])
+
+
+# ----- command line argument "temp/t"
+
+# dpm86 temp/t
+def cmd_temp():
+
+	dpm86read(f_temperature)
+	sys.exit(ok)
+
+
+# ----- command line argument "output/o"
+
+# dpm86 output/o
+def cmd_output_read():
+
+	dpm86read(f_output)
+
+# dpm86 output/o 1/on
+def cmd_output_on():
+
+	dpm86write(f_output,p_on)
+
+# dpm86 output/o 0/off
+def cmd_output_off():
+
+	dpm86write(f_output,p_off)
+
+# dpm output/o
+def cmd_output():
+
+	if len(sys.argv) == 2: cmd_output_read()		# output/o       -- read the actual output state (on/off)
+	elif sys.argv[2] in ['1', 'on']: cmd_output_on()	# output/o 1/on  -- turn the output on"
+	elif sys.argv[2] in ['0', 'off']: cmd_output_off()	# output/o 0/off -- turn the output off
+	else:
+		print("")
+		print("Argument 'output': unknown parameter '" + sys.argv[2] + "'")
+		print("")
+		sys.exit(error)
+
+
+# ----- command line argument "const/C"
+
+# dpm86 const/C
+def cmd_const_read():
+
+	dpm86read(f_const)
+
+# dpm86 const/C voltage/v
+def cmd_const_voltage():
+
+	dpm86write(f_const,p_voltage)
+
+# dpm86 const/C current/c
+def cmd_const_current():
+
+	dpm86write(f_const,p_current)
+
+# dpm const/C ...
+def cmd_const():
+
+	if len(sys.argv) == 2: cmd_const_read()							# const/C                        -- read the actual const setting (const voltage/const current)
+	elif sys.argv[2] in ['voltage', 'volt', 'v']: cmd_const_voltage()			# const/C voltage/volt/v         -- set constant voltage delivery
+	elif sys.argv[2] in ['current', 'c', 'ampere', 'amp', 'a']: cmd_const_current()		# const/C current/c/ampere/amp/a -- set constant current delivery
+	else:
+		print("")
+		print("Argument 'const': unknown parameter '" + sys.argv[2] + "'")
+		print("")
+		sys.exit(error)
+
+
+# ----- first command line argument
+
+# analyse first parameter
+def command_line_argument():
+	
+	if len(sys.argv) == 1:
+		print("Error: No command line argument given.")
+		help()
+		sys.exit(error)
+	elif sys.argv[1] in ['output', 'o']: cmd_output()
+	elif sys.argv[1] in ['const', 'C']: cmd_const()
+	elif sys.argv[1] in ['temp', 't']: cmd_temp()
+	elif sys.argv[1] in ['voltage', 'volt', 'v']: cmd_voltage()
+	elif sys.argv[1] in ['current', 'c', 'ampere', 'amp', 'a']: cmd_current()
+	elif sys.argv[1] in ['read', 'r']: cmd_read()
+	elif sys.argv[1] in ['write', 'w']: cmd_write()
+	else:
+		print("Unknown first command line argument '" + sys.argv[1] + "'")
+		help()
+		sys.exit(error)
+
+
+# initialise
+def init():
+
+	# check device tty
+	if not exists(tty):
+		print("ERROR -- Device '" + tty + "'does not exist.")
+		sys.exit(error)
+
+	if not stat.S_ISCHR(os.stat(tty).st_mode):
+		print("ERROR -- Device '" + tty + "' is not a character device.")
+		sys.exit(error)
+	
+	if not access(tty, R_OK):
+		print("ERROR -- Device '" + tty + "' is not readable.")
+		sys.exit(error)
+
+	if not access(tty, W_OK):
+		print("ERROR -- Device '" + tty + "' is not writable.")
+
+
+# ----- lowlevel communication with dpm86
+
+# dpm86: lowlevel - read a value
+def dpm86read(opcode):
+
+	# open device tty
+	ser = serial.Serial(
+		port = tty,
+		baudrate = 9600,
+		parity = serial.PARITY_NONE,
+		stopbits = serial.STOPBITS_ONE,
+		bytesize = serial.EIGHTBITS,
+		timeout=0.5, 
+		inter_byte_timeout=0.1
+	)
+
+	# sending command
+	cmd=":" + addr + read + opcode + "=0\r\n"
+	bcmd = cmd.encode()
+	written = ser.write(bcmd)
+	
+	if written < len(cmd):
+		print("ERROR -- Writing '" + cmd + "' to dpm86 failed: only " + written + " bytes written.")
+		ser.close()
+		sys.exit(error)
+	
+        # reading response
+	bresponse = ser.readline()
+	response = bresponse.decode()
+
+	# check response
+	if response == "":
+		print("ERROR -- Communication with dpm86 failed. No response read.")
+		ser.close()
+		sys.exit(error)
+
+	# cut off last character and the first seven characters
+	response = response[7:-3]
+	
+	# slog "dpm86read -- received response '$response'"
+	print(response)
+	ser.close()
+	sys.exit()
+
+# dpm86: lowlevel - write a command
+def dpm86write(opcode, value):
+
+	# open device tty
+	ser = serial.Serial(
+		port = tty,
+		baudrate = 9600,
+		parity = serial.PARITY_NONE,
+		stopbits = serial.STOPBITS_ONE,
+		bytesize = serial.EIGHTBITS,
+		timeout=0.5, 
+		inter_byte_timeout=0.1
+	)
+
+	# sending command
+	cmd=":" + addr + write + opcode + "=" + value
+	print("dpm86write: sending'" + cmd + "'")
+	cmd=cmd + ".\r\n"
+	bcmd = cmd.encode()
+	written = ser.write(bcmd)
+
+	if written < len(cmd):
+		print("ERROR -- Writing '" + cmd + "' to dpm86 failed: only " + written + " bytes written.")
+		ser.close()
+		sys.exit(error)
+
+	# slog "dpm86write -- reading response"
+	bresponse = ser.readline()
+	response = bresponse.decode()
+
+	# check response
+	if response == "":
+		#slog "dpm86write -- Communication with dpm86 failed: Timeout reading response."
+		print("ERROR -- Communication with dpm86 failed. No response read.")
+		ser.close()
+		sys.exit(error)
+
+	# cut off last three characters
+	response = response[:-2]
+
+	# check return value
+	if response == ":" + addr + "ok":
+		# slog "dpm86write -- received response '$response'"
+		print("ok")
+		sys.exit()
+	else:
+		# slog "dpm86write -- received response '$response'"
+		print(response)
+		sys.exit(error)
+
+
+### Main Code
+
+init()
+command_line_argument()
+
+# this is the last line :)
