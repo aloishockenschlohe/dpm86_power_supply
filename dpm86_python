@@ -23,6 +23,7 @@
 
 # History:
 #221026-AHo: Rewrite in Python
+#221029-AHo: minor cleanups
 
 import sys
 import serial, time
@@ -84,7 +85,7 @@ def help():
 	print(" " + sys.argv[0] + " -- tool for controlling DPM8600 series power supply")
 	print("")
 	print(" Usage:")
-	print("           $0 facility action parameter")
+	print("            " + sys.argv[0] + " action parameter")
 	print("")
 	print(" Details:")
 	print("           output/o                        -- read the actual output state (on/off)")
@@ -96,10 +97,10 @@ def help():
 	print("           voltage/volt/v target           -- read the voltage target")
 	print("")
 	print("           current/c/ampere/amp/a          -- read the actual deliviered current")
-	print("           current/c/ampere/amp/a <value>  -- set the target")
-	print("           current/c/ampere/amp/a target   -- current: read the target")
+	print("           current/c/ampere/amp/a <value>  -- set the current target")
+	print("           current/c/ampere/amp/a target   -- read the current target")
 	print("")
-	print("           const/C                         -- read the actual const setting (const voltage/const current)")
+	print("           const/C                         -- read the actual const setting (voltage/const)")
 	print("           const/C voltage/v               -- set constant voltage delivery")
 	print("           const/C current/c/ampere/amp/a  -- set constant current delivery")
 	print("")
@@ -176,6 +177,7 @@ def cmd_voltage():
 	elif sys.argv[2] in ['target']: cmd_voltage_target()	# voltage/v target   -- voltage: read the target
 	else: cmd_voltage_set()					# voltage/v <value>  -- voltage: set the target
 
+		
 # ----- raw communication
 
 # dpm read/r <function>
@@ -360,7 +362,6 @@ def dpm86write(opcode, value):
 
 	# sending command
 	cmd=":" + addr + write + opcode + "=" + value
-	print("dpm86write: sending'" + cmd + "'")
 	cmd=cmd + ".\r\n"
 	bcmd = cmd.encode()
 	written = ser.write(bcmd)
@@ -376,7 +377,6 @@ def dpm86write(opcode, value):
 
 	# check response
 	if response == "":
-		#slog "dpm86write -- Communication with dpm86 failed: Timeout reading response."
 		print("ERROR -- Communication with dpm86 failed. No response read.")
 		ser.close()
 		sys.exit(error)
