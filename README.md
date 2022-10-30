@@ -1,6 +1,6 @@
 # dpm86
 
-Tool for controlling DPM86xx Series power supply.
+Tool for controlling DPM86xx Series power supply via its RS485 interface.
 
 ## Usage
  
