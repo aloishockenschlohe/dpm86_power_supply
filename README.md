@@ -4,7 +4,7 @@ Tool for controlling DPM86xx Series power supply.
 
 ## Usage
  
- ./dpm86ng parameter
+ ./dpm86 parameter
 
 ## Command line arguments
  
