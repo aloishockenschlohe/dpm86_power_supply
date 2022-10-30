@@ -18,7 +18,7 @@ Tool for controlling DPM86xx Series power supply.
 
            current/c/ampere/amp/a            -- read the actual deliviered current
            current/c/ampere/amp/a <value>    -- set the current target
-           current/c/ampere/amp(a target     -- read the current target
+           current/c/ampere/amp/a target     -- read the current target
 
            const/C                           -- read the actual const setting (const voltage/const current)
            const/C voltage/v                 -- set constant voltage delivery
