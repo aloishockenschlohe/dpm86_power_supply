@@ -12,9 +12,9 @@ Tool for controlling DPM86xx Series power supply via its RS485 interface.
            output/o 1/on                     -- turn the output on
            output/o 0/off                    -- turn the output off
 
-           voltage/v                         -- read the actual delivered voltage
-           voltage/v <value>                 -- set the voltage target
-           voltage/v target                  -- read the voltage target
+           voltage/volt/v                    -- read the actual delivered voltage
+           voltage/volt/v <value>            -- set the voltage target
+           voltage/volt/v target             -- read the voltage target
 
            current/c/ampere/amp/a            -- read the actual deliviered current
            current/c/ampere/amp/a <value>    -- set the current target
