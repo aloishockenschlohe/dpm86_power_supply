@@ -24,6 +24,7 @@
 # History:
 #221026-AHo: Rewrite in Python
 #221029-AHo: minor cleanups
+#221030-AHo: Important (!) fix - do not miss it. Terminal sequence of the commands fixed (lines 323 and 365).
 
 import sys
 import serial, time
@@ -34,7 +35,7 @@ from os import access, R_OK, W_OK
 
 #----- variables
 
-ver="221026"			# version of this script
+ver="221030"			# version of this script
 
 # logging
 ltag="dpm86"
@@ -83,6 +84,7 @@ def help():
 
 	print("")
 	print(" " + sys.argv[0] + " -- tool for controlling DPM8600 series power supply")
+	print(" (Version " + version + ")")
 	print("")
 	print(" Usage:")
 	print("            " + sys.argv[0] + " action parameter")
@@ -319,7 +321,7 @@ def dpm86read(opcode):
 	)
 
 	# sending command
-	cmd=":" + addr + read + opcode + "=0\r\n"
+	cmd=":" + addr + read + opcode + "=0" + ",,\n"
 	bcmd = cmd.encode()
 	written = ser.write(bcmd)
 	
@@ -361,8 +363,7 @@ def dpm86write(opcode, value):
 	)
 
 	# sending command
-	cmd=":" + addr + write + opcode + "=" + value
-	cmd=cmd + ".\r\n"
+	cmd=":" + addr + write + opcode + "=" + value + ",,\n"
 	bcmd = cmd.encode()
 	written = ser.write(bcmd)
 
