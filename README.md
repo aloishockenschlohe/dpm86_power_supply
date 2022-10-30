@@ -1,6 +1,6 @@
 # dpm86
 
-Shellscript for using DPM8600 Series power supply.
+Tool for controlling DPM86xx Series power supply.
 
 ## Usage
  
@@ -8,26 +8,26 @@ Shellscript for using DPM8600 Series power supply.
 
 ## Command line arguments
  
-           output/o                   -- read the actual output state (on/off)
-           output/o 1/on              -- turn the output on
-           output/o 0/off             -- turn the output off
+           output/o                          -- read the actual output state (on/off)
+           output/o 1/on                     -- turn the output on
+           output/o 0/off                    -- turn the output off
 
-           voltage/v                  -- read the actual delivered voltage
-           voltage/v <value>          -- set the voltage target
-           voltage/v target           -- read the voltage target
+           voltage/v                         -- read the actual delivered voltage
+           voltage/v <value>                 -- set the voltage target
+           voltage/v target                  -- read the voltage target
 
-           current/c                  -- read the actual deliviered current
-           current/c <value>          -- set the target
-           current/c target           -- current: read the target
+           current/c/ampere/amp/a            -- read the actual deliviered current
+           current/c/ampere/amp/a <value>    -- set the current target
+           current/c/ampere/amp(a target     -- read the current target
 
-           const/C                    -- read the actual const setting (const voltage/const current)
-           const/C voltage/v          -- set constant voltage delivery
-           const/C current/c          -- set constant current delivery
+           const/C                           -- read the actual const setting (const voltage/const current)
+           const/C voltage/v                 -- set constant voltage delivery
+           const/C current/c                 -- set constant current delivery
 
-           temp/t                     -- read the temperature
+           temp/t                            -- read the temperature
 
-           read/r <function>          -- read value from function
-           write/w <function> <value> -- write <value> to <function>
+           read/r <function>                 -- read value from function
+           write/w <function> <value>        -- write <value> to <function>
 
 ## Examples
 
@@ -52,9 +52,9 @@ Shellscript for using DPM8600 Series power supply.
 
 - Set the current target to 1.301 A (desired current has to be multiplied by 1000) and read it.
 
-           user@mybox:~$ ./dpm86 current 1301
+           user@mybox:~$ ./dpm86 ampere 1301
            ok
-           user@mybox:~$ ./dpm86 current target
+           user@mybox:~$ ./dpm86 amp target
            1301
            user@mybox:~$ 
 
@@ -86,9 +86,10 @@ Shellscript for using DPM8600 Series power supply.
 - DPM8624 (see f. e. https://joy-it.net/en/products/JT-DPM8624)
 
 ## Be aware!
- 
+
 1. The power supply has to be set to "simple protocol". Please check the manual.
-2. Bash-Version: You have to place the file 'basic_functions' in the same directory.
-3. Check the variable 'tty' to choose the right ttyUSB-device.
+2. If you are still using the bash version: You have to place the file 'basic_functions' in the same directory.
+3. Check the variable 'tty' and choose the right ttyUSB-device.
+4. Be sure that there is no potential difference between the power supply and the controlling device. Otherwise the signal transmission is damn error-prone, which becomes noticeable e.g. by strange characters in the transmission (or no transmission at all). Connect both to the same ground.
 4. This script comes along with no warranty at all. You have been warned.
 5. Have fun.
