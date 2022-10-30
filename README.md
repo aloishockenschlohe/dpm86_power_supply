@@ -90,6 +90,6 @@ Tool for controlling DPM86xx Series power supply.
 1. The power supply has to be set to "simple protocol". Please check the manual.
 2. If you are still using the bash version: You have to place the file 'basic_functions' in the same directory.
 3. Check the variable 'tty' and choose the right ttyUSB-device.
-4. Be sure that there is no potential difference between the power supply and the controlling device. Otherwise the signal transmission is damn error-prone, which becomes noticeable e.g. by strange characters in the transmission (or no transmission at all). Connect both to the same ground.
+4. Be sure that there is no potential difference between the power supply and the controlling device (correctly spoken: betwen the power supply and the USB-RS485 adapter). Otherwise the signal transmission is damn error-prone, which becomes noticeable e.g. by strange characters in the transmission (or no transmission at all). Connect both to the same ground.
 4. This script comes along with no warranty at all. You have been warned.
 5. Have fun.
