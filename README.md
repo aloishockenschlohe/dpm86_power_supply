@@ -90,6 +90,6 @@ Tool for controlling DPM86xx Series power supply via its RS485 interface.
 1. The power supply has to be set to "simple protocol". Please check the manual.
 2. Check the variable 'tty' and choose the right ttyUSB-device.
 3. Be sure that there is no potential difference between the power supply and the controlling device (correctly spoken: betwen the power supply and the USB-RS485 adapter). Otherwise the signal transmission is damn error-prone, which becomes noticeable e.g. by strange characters in the transmission (or no transmission at all). Connect both to the same ground.
-4. The kernel module "ch341" included in the mainstream kernel is rather buggy. After a while a error message shows up ("serial.serialutil.SerialException: [Errno 12] could not open port /dev/ttyUSB0: [Errno 12] Cannot allocate memory: '/dev/ttyUS0'") and the serial port isn't reachable anymore. At the moment an alernative kernel module is being tested (see https://github.com/WCHSoftGroup/ch341ser_linux). Press your thumbs!
+4. As seen with Raspberry 4: After a while a error message shows up ("serial.serialutil.SerialException: [Errno 12] could not open port /dev/ttyUSB0: [Errno 12] Cannot allocate memory: '/dev/ttyUSB0'") and the serial port isn't reachable anymore. Avoid RPi 4. Use RPi 3 instead.
 5. This script comes along with no warranty at all. You have been warned.
 6. Have fun.
