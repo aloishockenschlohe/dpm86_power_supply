@@ -22,7 +22,7 @@ Tool for controlling DPM86xx Series power supply via its RS485 interface.
 
            const/C                           -- read the actual const setting (const voltage/const current)
            const/C voltage/v                 -- set constant voltage delivery
-           const/C current/c                 -- set constant current delivery
+           const/C current/c/ampere/amp/a    -- set constant current delivery
 
            temp/t                            -- read the temperature
 
@@ -30,7 +30,6 @@ Tool for controlling DPM86xx Series power supply via its RS485 interface.
            write/w <function> <value>        -- write <value> to <function>
 
 ## Examples
-
 
 - Turn output off, read output state, turn output on, read output state again:
 
