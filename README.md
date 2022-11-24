@@ -4,30 +4,36 @@ Tool for controlling DPM86xx Series power supply via its RS485 interface.
 
 ## Usage
  
- ./dpm86 parameter
+ ./dpm86oo parameter
 
 ## Command line arguments
  
-           output/o                          -- read the actual output state (on/off)
-           output/o 1/on                     -- turn the output on
-           output/o 0/off                    -- turn the output off
+           output/o                                -- read the actual output state (on/off)
+           output/o 1/on                           -- turn the output on
+           output/o 0/off                          -- turn the output off
 
-           voltage/volt/v                    -- read the actual delivered voltage
-           voltage/volt/v <value>            -- set the voltage target
-           voltage/volt/v target             -- read the voltage target
+           voltage/volt/v                          -- read the actual delivered voltage
+           voltage/volt/v <0.0 .. max>             -- set the voltage target
+           voltage/volt/v target/setting           -- read the voltage target
+           voltage/volt/v max                      -- read the maximum output voltage
 
-           current/c/ampere/amp/a            -- read the actual deliviered current
-           current/c/ampere/amp/a <value>    -- set the current target
-           current/c/ampere/amp/a target     -- read the current target
+           current/c/ampere/amp/a                  -- read the actual deliviered current
+           current/c/ampere/amp/a <0.0 .. max>     -- set the current target
+           current/c/ampere/amp/a target/setting   -- read the current target
+           current/c/ampere/amp/a max              -- read the maximum output current
 
-           const/C                           -- read the actual const setting (const voltage/const current)
-           const/C voltage/v                 -- set constant voltage delivery
-           const/C current/c/ampere/amp/a    -- set constant current delivery
+           power/p/watt/w                          -- read the actual delivered power
+           power/p/watt/w target/setting           -- read the power target
 
-           temp/t                            -- read the temperature
+           const/C                                 -- read the actual const setting (voltage/const)
+           const/C voltage/v                       -- set constant voltage delivery
+           const/C current/c/ampere/amp/a          -- set constant current delivery
 
-           read/r <function>                 -- read value from function
-           write/w <function> <value>        -- write <value> to <function>
+           temp/t                                  -- read the temperature
+
+           READ/R <function>                       -- read value from function (DANGEROUS!)
+           WRITE/W <function> <value>              -- write <value> to <function> (DANGEROUS!)
+
 
 ## Examples
 
@@ -43,32 +49,32 @@ Tool for controlling DPM86xx Series power supply via its RS485 interface.
            1
            user@mybox:~$ 
            
-- Read actual delivered current (returned current has to be divided by 1000).
+- Read actual delivered current
 
            user@mybox:~$ ./dpm86 current
-           1255
+           12.55
            user@mybox:~$ 
 
-- Set the current target to 1.301 A (desired current has to be multiplied by 1000) and read it.
+- Set the current target to 1.301 A
 
-           user@mybox:~$ ./dpm86 ampere 1301
+           user@mybox:~$ ./dpm86 ampere 1.301
            ok
            user@mybox:~$ ./dpm86 amp target
-           1301
+           1.301
            user@mybox:~$ 
 
-- Read actual delivered voltage (returned voltage has to be divided by 100).
+- Read actual delivered voltage
 
            user@mybox:~$ ./dpm86 v
-           2120
+           21.20
            user@mybox:~$ 
 
-- Set the voltage target to 25.3 V (desired voltage has to be multiplied by 100) and read it.
+- Set the voltage target to 25.3 V
 
-           user@mybox:~$ ./dpm86 voltage 2530
+           user@mybox:~$ ./dpm86 voltage 25.3
            ok
            user@mybox:~$ ./dpm86 v target
-           2530
+           25.30
            user@mybox:~$ 
 
 - Read the temperature
