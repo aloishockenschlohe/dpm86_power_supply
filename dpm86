@@ -2,6 +2,7 @@
 
 # Program: dpm86
 # Purpose: easy communication with DPM8600 Series Power Supply
+# State: deprecated - please use the version dpm86oo (object-orientated, more features)
 
 #
 # Should work with:
