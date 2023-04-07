@@ -1,7 +1,7 @@
 #! /usr/bin/python3
 
 # Program: dpm86
-# Purpose: easy communication with DPM86xx Series Power Supply
+# Purpose: Control the DPM86xx series Power Supply from the Linux command line
 
 #
 # Should work with:
@@ -14,7 +14,7 @@
 # ! Be aware !
 # - The power supply has to be set to "simple protocol" (this is the default configuration). Check the manual.
 # - Check the variable 'tty' and choose the correct ttyUSB-device.
-# - Check the variable 'addr' and choose the correct ID of your power supply. The ID is '01' by default.
+# - Check the variable 'addr' and choose the correct ID of your power supply ('01' by default).
 #   Unless you changed the setup of your power supply this should match. If in doubt: Check the manual and your power supply.
 # - Be sure that there is no potential difference between the power supply and the controlling device (correctly spoken:
 #   between the power supply and the USB-RS485 adapter). Otherwise the signal transmission is damn error-prone, which becomes
