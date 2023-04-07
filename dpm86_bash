@@ -1,8 +1,8 @@
 #! /usr/bin/python3
 
-# Program: dpm86
+# Program: dpm86_bash
 # Purpose: easy communication with DPM8600 Series Power Supply
-# State: deprecated - please use the version dpm86oo (object-orientated, more features)
+# State: deprecated - please use the version dpm86 (object-orientated, more features, python)
 
 #
 # Should work with:
