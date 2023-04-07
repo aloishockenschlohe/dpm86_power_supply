@@ -4,7 +4,7 @@ Tool for controlling DPM86xx Series power supply via its RS485 interface.
 
 ## Usage
  
- ./dpm86 <action> <parameter>
+ ./dpm86 action parameter
 
 ## Command line arguments
  
