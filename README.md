@@ -94,6 +94,7 @@ Tool for controlling DPM86xx Series power supply via its RS485 interface.
 
 1. The power supply has to be set to "simple protocol". Please check the manual.
 2. Check the variable 'tty' and choose the right ttyUSB-device.
-3. DO NOT USE Raspberry 4! After a while a error message shows up ("serial.serialutil.SerialException: [Errno 12] could not open port /dev/ttyUSB0: [Errno 12] Cannot allocate memory: '/dev/ttyUSB0'") and the serial port isn't reachable anymore. Use RPi 3 or RPi Zero (W) instead.
+3. Check the variable 'CURRENT_MAX' and set it to the maxium current delivered by your power supply.
+4. DO NOT USE Raspberry 4! After a while a error message shows up ("serial.serialutil.SerialException: [Errno 12] could not open port /dev/ttyUSB0: [Errno 12] Cannot allocate memory: '/dev/ttyUSB0'") and the serial port isn't reachable anymore. Use RPi 3 or RPi Zero (W) instead.
 5. This script comes along with no warranty at all. You have been warned.
 6. Have fun.
