@@ -28,6 +28,7 @@
 #221026-AHo: Rewritten in Python
 #221105-AHo: Moved to object oriented.
 #221124-AHo: Bugfixes, some new features. Still sometimes really ugly code, but it works. :-)
+#240101-AHo: Added comments about variable "tty" (DPM86 communication)
 
 import sys
 import serial, time
@@ -38,10 +39,28 @@ from os import access, R_OK, W_OK
 
 #----- variables
 
-ver="221124"			# version of this script
+ver="240101"			# version of this script
 
 # DPM settings
 addr="01"			# Adress of the power supply. Default: 01. Check manual of the power suppy for more information.
+
+# DPM86 communication
+# ===================
+# The DPM86 power supply unit is controlled via the "RS485" protocol over a physical connection
+# between the computer and the power supply unit (cable with two wires, e.g. bell wire).
+#
+# On the RPi, the corresponding pins on the GPIO strip can be used or a corresponding interface can be
+# added with a USB-to-RS485 adapter (these adapters cost a few €). Either way - at the end of the day,
+# the device via which the power supply unit can be accessed must be entered here.
+#
+# -> /dev/ttyUSBx - if you use a USB-to-RS485 adapter 
+# -> /dev/ttyAMA0 - if you use the PL011-UART from the Raspberry (untested!)
+# -> /dev/ttyS0 - the mini UART from the Raspberry (untested!)
+#
+# Good sources (in German):
+# - https://www.raspberry-pi-geek.de/ausgaben/rpg/2020/02/serielle-kommunikation-ueber-rs-485-mit-dem-raspberry-pi/
+# - https://www.raspberry-pi-geek.de/ausgaben/rpg/2019/12/serielle-kommunikation-ueber-rs-232-rs-485-teil-1/
+#
 tty="/dev/ttyUSB0"		# The device via this script is talkinf to the power supply.
 
 read="r"
