@@ -1,7 +1,7 @@
 #! /usr/bin/python3
 
 # Program: dpm86
-# Purpose: Control the DPM86xx series Power Supply from the Linux command line
+# Purpose: Control the DPM86xx series Power Supply from the Linux command line.
 
 #
 # Should work with:
